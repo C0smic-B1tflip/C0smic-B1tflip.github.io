@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "echo \"No tests defined\"",
     "export": "next export",
-    "gh-deploy": "npm run build && npm run export"
+    "gh-deploy": "npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
