@@ -10,7 +10,8 @@
   "test": "echo \"No tests defined\"",
   "export": "next export",
   "gh-deploy": "npm run build && npm run export"
-},
+}
+
 "homepage": "https://c0smic-b1tflip.github.io/"
 
   "dependencies": {
