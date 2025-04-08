@@ -3,17 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint",
-  "test": "echo \"No tests defined\"",
-  "export": "next export",
-  "gh-deploy": "npm run build && npm run export"
-}
-
-"homepage": "https://c0smic-b1tflip.github.io/"
-
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "echo \"No tests defined\"",
+    "export": "next export",
+    "gh-deploy": "npm run build && npm run export"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.2.2",
