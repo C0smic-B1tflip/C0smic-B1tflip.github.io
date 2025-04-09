@@ -29,6 +29,8 @@ jobs:
       run: npm ci --legacy-peer-deps
     - name: Build the project
       run: npm run build  # This will automatically handle the export with output: 'export'
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
     - name: Archive the artifact
       uses: actions/upload-pages-artifact@v3
       with:
