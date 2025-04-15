@@ -21,10 +21,10 @@ export default function Team() {
         {teamMembers.map((member, index) => (
           <div
             key={index}
-            className="flex w-[260px] flex-col items-center rounded-2xl bg-gradient-to-br from-black via-zinc-900 to-black px-6 py-300 shadow-[0_0_20px_3px_rgba(168,85,247,0.5)]"
+            className="flex w-[260px] min-h-[400px] flex-col items-center rounded-2xl bg-gradient-to-br from-black via-zinc-900 to-black px-6 py-8 shadow-[0_0_20px_3px_rgba(168,85,247,0.5)] mt-12" // Added mt-12 here
           >
             {/* Profile Image */}
-            <div className="mb-8 h-28 w-28 overflow-hidden rounded-full border-2 border-white bg-zinc-800">
+            <div className="h-28 w-28 mb-5 rounded-full border-2 border-white bg-zinc-800 overflow-hidden">
               <Image
                 src={member.image}
                 alt={member.name}
@@ -35,19 +35,19 @@ export default function Team() {
             </div>
 
             {/* Name */}
-            <h2 className="text-base mb-4">{member.name}</h2>
+            <h2 className="text-base text-center">{member.name}</h2>
 
             {/* Description */}
-            <p className="text-[10px] text-zinc-300 text-center leading-relaxed mb-6 max-w-[200px]">
+            <p className="text-[10px] text-zinc-300 text-center leading-relaxed max-w-[200px]">
               {member.description}
             </p>
 
             {/* Tags */}
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-2">
               {member.tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="rounded-full border border-purple-500 bg-black/30 px-4 py-1 text-[10px] text-purple-400 shadow-[0_0_8px_1px_rgba(168,85,247,0.4)]"
+                  className="rounded-full border border-purple-500 bg-black/30 px-3 py-1 text-[10px] text-purple-400 shadow-[0_0_6px_1px_rgba(168,85,247,0.3)]"
                 >
                   {tag}
                 </span>
