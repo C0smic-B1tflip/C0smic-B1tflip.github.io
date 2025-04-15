@@ -15,9 +15,7 @@
 
 # next.js
 /.next/
-
-# The `out` directory should not be ignored by version control
-# /out/
+/out/
 
 # production
 /build
@@ -30,9 +28,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
-# local env files
-.env*.local
+# env files (can opt-in for committing if needed)
+.env*
 
 # vercel
 .vercel

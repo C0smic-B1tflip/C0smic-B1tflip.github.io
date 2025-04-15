@@ -1,0 +1,124 @@
+@import "tailwindcss";
+@import '@fontsource/press-start-2p';
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Press Start 2P', monospace;
+  background: linear-gradient(135deg, #1a2a6c, #2e1fb2, #2d2dfd); /* Cosmic gradient background */
+  background-size: cover;
+  color: white;
+  padding: 2rem;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/images/stars.jpg') repeat; /* Optional: add a starry image as background */
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.team-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  color: #fff;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.team-member {
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background for cards */
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+  backdrop-filter: blur(5px); /* Adds blur to background, enhancing the "space" feel */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.member-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.1); /* Adding a slight glow effect */
+}
+
+.member-image {
+  object-fit: cover;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.member-info {
+  padding: 1.5rem;
+}
+
+.member-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+.member-title {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+/* Add a subtle glowing effect for hover */
+.team-member:hover .member-name,
+.team-member:hover .member-title {
+  color: #f0f0f0;
+  text-shadow: 0 0 15px #00d4ff, 0 0 25px #00d4ff;
+}
