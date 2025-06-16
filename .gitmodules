@@ -1,0 +1,3 @@
+[submodule "astro-erudite"]
+	path = astro-erudite
+	url = https://github.com/jktrn/astro-erudite

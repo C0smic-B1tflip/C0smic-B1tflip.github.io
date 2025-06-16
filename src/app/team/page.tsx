@@ -8,6 +8,12 @@ const teamMembers = [
     image: '/images/profile/pfp.png',
     tags: ['pwn', 'web', 'crypto'],
   },
+  {
+    name: 'username2',
+    description: 'some2 random description goes here',
+    image: '/images/profile/pfp.png',
+    tags: ['rev', 'foren', 'osint'],
+  },
 ];
 
 export default function Team() {
