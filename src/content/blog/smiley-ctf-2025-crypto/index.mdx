@@ -82,7 +82,7 @@ $$
 &= x \pmod n
 \end{align*}
 $$
-(Similarly, we can verify that 1 and then -1 gives $1 \bmod p$ and $-1 \bmod q$).If $x = -1 \bmod p$ then $\gcd(x+1, n) = p$. Now that we know $n$ and $p$, we can forge $s = m^d$ as usual. Connect to the server:
+(Similarly, we can verify that 1 and then -1 gives $1 \bmod p$ and $-1 \bmod q$). If $x = -1 \bmod p$ then $\gcd(x+1, n) = p$. Now that we know $n$ and $p$, we can forge $s = m^d$ as usual. Connect to the server:
 ```
 >>> 1
 22584873973170387532631975715183528422437016681010618464581741882284345475758086005221539371683857475009200576502143088424522374562879237368635174156835283415890738492843061847279270354725129748353239745320933642792426188606836171676085221631281998525476933677154286648781607693710919190128678155081909268088
@@ -118,9 +118,163 @@ s = pow(m, d, n)
 
 print(s)
 ```
-flag: `.;,;.{squares_as_a_service_est_like_the_dawn_of_time}`
+Flag: `.;,;.{squares_as_a_service_est_like_the_dawn_of_time}`
 # never enough
-TODO. my script for this one was kinda shit
+### Source
+```py
+from random import getrandbits
+from Crypto.Cipher import AES
+from hashlib import sha256
+danger = 624*32 # i hear you need this much.
+given = []
+key = ""
+for _ in range(danger//20 - 16): # should be fine if im only giving u this much :3
+    x = getrandbits(32)
+    # we share <3
+    key += str(x % 2**12)
+    given.append(x >> 12)
+
+key = key[:100]
+key = sha256(key.encode()).digest()
+flag = open("flag.txt", "rb").read().strip()
+cipher = AES.new(key, AES.MODE_ECB)
+print(given)
+print(cipher.encrypt(flag + b"\x00" * (16 - len(flag) % 16)).hex())
+```
+This challenge clearly involves cracking python's `random`, which is based on the mersenne twister algorithm. The script references the misconception that since the state of mersenne twister has 624 32-bit integers, you must need 624*32 bits of output in order to crack the generator, but it turns out you don't need quite this many. Fortunately, we found [a blog from rbtree](https://rbtree.blog/posts/2021-05-18-breaking-python-random-module/) (unfortunately in Korean, so we had to translate) covering a very similar challenge, so we won't really have to understand the internals of the prng. As mentioned in rbtree's post, for some reason it's impossible to recover the lower bits of the first value of the state, so we had to bruteforce $2^{12}$ values to find the first part of the key. The vast majority of the solve script was taken directly from rbtree's final code, and it takes about 2 minutes to run.
+### Final script:
+```py
+from tqdm import trange
+from Crypto.Util.number import *
+from hashlib import sha256
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+import json
+import random
+
+class Twister:
+    N = 624
+    M = 397
+    A = 0x9908b0df
+
+    def __init__(self):
+        self.state = [ [ (1 << (32 * i + (31 - j))) for j in range(32) ] for i in range(624)]
+        self.index = 0
+    
+    @staticmethod
+    def _xor(a, b):
+        return [x ^ y for x, y in zip(a, b)]
+    
+    @staticmethod
+    def _and(a, x):
+        return [ v if (x >> (31 - i)) & 1 else 0 for i, v in enumerate(a) ]
+    
+    @staticmethod
+    def _shiftr(a, x):
+        return [0] * x + a[:-x]
+    
+    @staticmethod
+    def _shiftl(a, x):
+        return a[x:] + [0] * x
+
+    def get32bits(self):
+        if self.index >= self.N:
+            for kk in range(self.N):
+                y = self.state[kk][:1] + self.state[(kk + 1) % self.N][1:]
+                z = [ y[-1] if (self.A >> (31 - i)) & 1 else 0 for i in range(32) ]
+                self.state[kk] = self._xor(self.state[(kk + self.M) % self.N], self._shiftr(y, 1))
+                self.state[kk] = self._xor(self.state[kk], z)
+            self.index = 0
+
+        y = self.state[self.index]
+        y = self._xor(y, self._shiftr(y, 11))
+        y = self._xor(y, self._and(self._shiftl(y, 7), 0x9d2c5680))
+        y = self._xor(y, self._and(self._shiftl(y, 15), 0xefc60000))
+        y = self._xor(y, self._shiftr(y, 18))
+        self.index += 1
+
+        return y
+    
+    def getrandbits(self, bit):
+        return self.get32bits()[:bit]
+
+class Solver:
+    def __init__(self):
+        self.equations = []
+        self.outputs = []
+    
+    def insert(self, equation, output):
+        for eq, o in zip(self.equations, self.outputs):
+            lsb = eq & -eq
+            if equation & lsb:
+                equation ^= eq
+                output ^= o
+        
+        if equation == 0:
+            return
+
+        lsb = equation & -equation
+        for i in range(len(self.equations)):
+            if self.equations[i] & lsb:
+                self.equations[i] ^= equation
+                self.outputs[i] ^= output
+    
+        self.equations.append(equation)
+        self.outputs.append(output)
+    
+    def solve(self):
+        num = 0
+        for i, eq in enumerate(self.equations):
+            if self.outputs[i]:
+                # Assume every free variable is 0
+                num |= eq & -eq
+        
+        state = [ (num >> (32 * i)) & 0xFFFFFFFF for i in range(624) ]
+        return state
+
+num = ((624 * 32)//20 - 16)
+bit = 20
+twister = Twister()
+
+with open('out.txt') as f:
+    lines = f.readlines()
+    outputs = json.loads(lines[0])
+    enc = bytes.fromhex(lines[1])
+
+equations = [ twister.getrandbits(bit) for _ in range(num) ]
+
+solver = Solver()
+for i in trange(num):
+    for j in range(bit):
+        #print(i, j)
+        solver.insert(equations[i][j], (outputs[i] >> (bit - 1 - j)) & 1)
+
+state = solver.solve()
+recovered_state = (3, tuple(state + [0]), None)
+random.setstate(recovered_state)
+
+for i in range(num):
+    assert outputs[i] == (random.getrandbits(bit))
+
+for i in range(2**12): # brute force the first output of the key
+    random.setstate(recovered_state)
+    random.getrandbits(32)
+    key = ""
+    for _ in range(30):
+        x = random.getrandbits(32)
+        key += str(x % 2**12)
+
+    length = len(str(i))
+    key = str(i) + key[0:100 - length]
+    assert len(key) == 100
+    key = sha256(key.encode()).digest()
+    cipher = AES.new(key, AES.MODE_ECB)
+    dec = cipher.decrypt(enc)
+    if b'.;,;.' in dec:
+        print(dec.rstrip(b'\x00').decode('ascii'))
+        break
+```
+Flag: `.;,;.{never_enough_but_you_gotta_just_make_more_or_something_idk_im_not_a_motivational_speaker_but_you_get_the_idea}`
 # LCGs are SBGs
 TODO (or is wjat doing this or something)
 # sums
