@@ -1,0 +1,232 @@
+/* Pixelated Star Background */
+@layer components {
+  .star-field {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .star-small {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--foreground);
+    opacity: 0.7;
+    box-shadow: 
+      8vw 10vh var(--foreground),
+      20vw 18vh var(--foreground),
+      32vw 12vh var(--foreground),
+      45vw 25vh var(--foreground),
+      12vw 35vh var(--foreground),
+      28vw 42vh var(--foreground),
+      41vw 38vh var(--foreground),
+      55vw 15vh var(--foreground),
+      67vw 22vh var(--foreground),
+      78vw 32vh var(--foreground),
+      88vw 28vh var(--foreground),
+      5vw 55vh var(--foreground),
+      18vw 62vh var(--foreground),
+      30vw 58vh var(--foreground),
+      48vw 65vh var(--foreground),
+      65vw 52vh var(--foreground),
+      75vw 45vh var(--foreground),
+      85vw 68vh var(--foreground),
+      10vw 75vh var(--foreground),
+      25vw 82vh var(--foreground),
+      38vw 78vh var(--foreground),
+      52vw 85vh var(--foreground),
+      68vw 72vh var(--foreground),
+      82vw 88vh var(--foreground),
+      4vw 95vh var(--foreground),
+      22vw 92vh var(--foreground),
+      36vw 98vh var(--foreground),
+      50vw 90vh var(--foreground),
+      64vw 95vh var(--foreground),
+      80vw 92vh var(--foreground);
+    animation: star-twinkle 3s infinite;
+  }
+
+  .star-medium {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--foreground);
+    opacity: 0.8;
+    box-shadow: 
+      15vw 8vh var(--foreground),
+      28vw 20vh var(--foreground),
+      42vw 14vh var(--foreground),
+      58vw 28vh var(--foreground),
+      72vw 18vh var(--foreground),
+      88vw 35vh var(--foreground),
+      7vw 40vh var(--foreground),
+      22vw 48vh var(--foreground),
+      35vw 32vh var(--foreground),
+      50vw 45vh var(--foreground),
+      65vw 38vh var(--foreground),
+      78vw 50vh var(--foreground),
+      12vw 68vh var(--foreground),
+      28vw 72vh var(--foreground),
+      42vw 65vh var(--foreground),
+      55vw 78vh var(--foreground),
+      70vw 62vh var(--foreground),
+      85vw 75vh var(--foreground),
+      8vw 88vh var(--foreground),
+      30vw 95vh var(--foreground),
+      45vw 85vh var(--foreground),
+      60vw 92vh var(--foreground),
+      75vw 88vh var(--foreground),
+      90vw 95vh var(--foreground);
+    animation: star-twinkle 4s infinite;
+  }
+
+  .star-large {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    opacity: 0.9;
+    box-shadow: 
+      20vw 12vh var(--accent),
+      40vw 25vh var(--accent),
+      62vw 16vh var(--accent),
+      82vw 32vh var(--accent),
+      10vw 45vh var(--accent),
+      32vw 52vh var(--accent),
+      55vw 42vh var(--accent),
+      75vw 48vh var(--accent),
+      18vw 70vh var(--accent),
+      38vw 78vh var(--accent),
+      58vw 68vh var(--accent),
+      78vw 82vh var(--accent),
+      14vw 90vh var(--accent),
+      35vw 95vh var(--accent),
+      56vw 88vh var(--accent),
+      76vw 96vh var(--accent);
+    animation: star-twinkle 5s infinite;
+  }
+
+  .star-pixel {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--primary);
+    opacity: 0.8;
+  }
+
+  .star-pixel::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--primary);
+    top: -6px;
+    left: 0;
+  }
+
+  .star-pixel::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--primary);
+    top: 6px;
+    left: 0;
+  }
+
+  .star-pixel-cross::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--primary);
+    top: 0;
+    left: -6px;
+  }
+
+  .star-pixel-cross::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--primary);
+    top: 0;
+    left: 6px;
+  }
+
+  .pixel-star-1 {
+    position: absolute;
+    top: 15%;
+    left: 25%;
+    animation: star-twinkle 2s infinite;
+  }
+
+  .pixel-star-2 {
+    position: absolute;
+    top: 35%;
+    left: 70%;
+    animation: star-twinkle 3s infinite 0.5s;
+  }
+
+  .pixel-star-3 {
+    position: absolute;
+    top: 60%;
+    left: 15%;
+    animation: star-twinkle 4s infinite 1s;
+  }
+
+  .pixel-star-4 {
+    position: absolute;
+    top: 80%;
+    left: 85%;
+    animation: star-twinkle 2.5s infinite 1.5s;
+  }
+
+  .pixel-star-5 {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    animation: star-twinkle 3.5s infinite 2s;
+  }
+
+  .pixel-star-6 {
+    position: absolute;
+    top: 75%;
+    left: 40%;
+    animation: star-twinkle 4.5s infinite 0.8s;
+  }
+
+  @keyframes star-twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .star-colored {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    box-shadow: 
+      25vw 15vh oklch(0.7 0.15 200),
+      50vw 30vh oklch(0.8 0.2 60),
+      75vw 22vh oklch(0.75 0.25 320),
+      12vw 55vh oklch(0.8 0.15 120),
+      38vw 65vh oklch(0.7 0.2 280),
+      63vw 48vh oklch(0.85 0.15 80),
+      18vw 85vh oklch(0.75 0.2 240),
+      45vw 92vh oklch(0.8 0.25 40),
+      70vw 78vh oklch(0.7 0.2 180),
+      32vw 88vh oklch(0.8 0.15 300);
+    animation: star-color-twinkle 6s infinite;
+  }
+
+  @keyframes star-color-twinkle {
+    0%, 100% { opacity: 0.4; }
+    25% { opacity: 0.8; }
+    50% { opacity: 1; }
+    75% { opacity: 0.6; }
+  }
+}

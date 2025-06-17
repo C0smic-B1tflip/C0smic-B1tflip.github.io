@@ -1,7 +1,7 @@
 ---
 import '@/styles/global.css'
 import '@/styles/typography.css'
-
+import '@/styles/stars.css' 
 import Footer from '@/components/Footer.astro'
 import Head from '@/components/Head.astro'
 import Header from '@/components/Header.astro'
@@ -21,6 +21,33 @@ const { class: className } = Astro.props
     <slot name="head" />
   </Head>
   <body>
+    <!-- Pixelated Star Background -->
+    <div class="star-field">
+      <div class="star-small"></div>
+      <div class="star-medium"></div>
+      <div class="star-large"></div>
+      <div class="star-colored"></div>
+      
+      <div class="pixel-star-1">
+        <div class="star-pixel star-pixel-cross"></div>
+      </div>
+      <div class="pixel-star-2">
+        <div class="star-pixel star-pixel-cross"></div>
+      </div>
+      <div class="pixel-star-3">
+        <div class="star-pixel star-pixel-cross"></div>
+      </div>
+      <div class="pixel-star-4">
+        <div class="star-pixel star-pixel-cross"></div>
+      </div>
+      <div class="pixel-star-5">
+        <div class="star-pixel star-pixel-cross"></div>
+      </div>
+      <div class="pixel-star-6">
+        <div class="star-pixel star-pixel-cross"></div>
+      </div>
+    </div>
+    
     <div class="flex h-fit min-h-screen flex-col gap-y-6 font-sans">
       <div
         class="bg-background/50 sticky top-0 z-50 divide-y backdrop-blur-sm xl:divide-none"
