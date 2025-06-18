@@ -5,7 +5,9 @@ import PageHead from '@/components/PageHead.astro'
 import PaginationComponent from '@/components/ui/pagination'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getAllPosts, groupPostsByYear } from '@/lib/data-utils'
+import { getAllPosts, groupPostsByYear, getSubpostsForParent } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+
 import type { PaginateFunction } from 'astro'
 
 export async function getStaticPaths({
@@ -13,13 +15,25 @@ export async function getStaticPaths({
 }: {
   paginate: PaginateFunction
 }) {
-  const allPosts = await getAllPosts()
-  return paginate(allPosts, { pageSize: SITE.postsPerPage })
+  // Only paginate parent posts
+  const parentPosts = await getAllPosts()
+  return paginate(parentPosts, { pageSize: SITE.postsPerPage })
 }
 
 const { page } = Astro.props
 
-const postsByYear = groupPostsByYear(page.data)
+// Get subposts for each parent post on current page
+const postsWithSubposts = await Promise.all(
+  page.data.map(async (post) => {
+    const subposts = await getSubpostsForParent(post.id)
+    return {
+      ...post,
+      subposts
+    }
+  })
+)
+
+const postsByYear = groupPostsByYear(postsWithSubposts)
 const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 
@@ -40,7 +54,67 @@ const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
           <ul class="flex flex-col gap-4">
             {postsByYear[year].map((post) => (
               <li>
-                <BlogCard entry={post} />
+                <div class="rounded-lg border bg-card p-6">
+                  {/* Parent Post */}
+                  <BlogCard entry={post} showInCard={false} />
+                  
+                  {/* Subposts */}
+                  {post.subposts && post.subposts.length > 0 && (
+                    <div class="mt-6 pt-4 border-t border-muted">
+                      <div class="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
+                        <Icon name="lucide:list" class="size-4" />
+                        <span class="font-medium">
+                          {post.subposts.length} part{post.subposts.length === 1 ? '' : 's'} in this series:
+                        </span>
+                      </div>
+                      <ul class="space-y-2">
+                        {post.subposts.map((subpost, index) => (
+                          <li>
+                            <a 
+                              href={`/blog/${subpost.id}`}
+                              class="flex items-start gap-3 rounded-md bg-muted/30 p-3 hover:bg-muted/50 transition-colors cursor-pointer block"
+                            >
+                              <span class="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary shrink-0">
+                                {index + 1}
+                              </span>
+                              <div class="flex-1 min-w-0">
+                                <h3 class="font-medium text-sm leading-snug mb-1 hover:text-primary transition-colors">
+                                  {subpost.data.title}
+                                </h3>
+                                {subpost.data.description && (
+                                  <p class="text-xs text-muted-foreground line-clamp-2">
+                                    {subpost.data.description}
+                                  </p>
+                                )}
+                                <div class="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                                  <time datetime={subpost.data.date.toISOString()}>
+                                    {new Intl.DateTimeFormat('en-US', {
+                                      month: 'short',
+                                      day: 'numeric',
+                                      year: 'numeric'
+                                    }).format(subpost.data.date)}
+                                  </time>
+                                  {subpost.data.tags && subpost.data.tags.length > 0 && (
+                                    <>
+                                      <span>•</span>
+                                      <div class="flex items-center gap-1">
+                                        <Icon name="lucide:tag" class="size-3" />
+                                        <span>{subpost.data.tags.slice(0, 2).join(', ')}</span>
+                                        {subpost.data.tags.length > 2 && (
+                                          <span>+{subpost.data.tags.length - 2}</span>
+                                        )}
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
