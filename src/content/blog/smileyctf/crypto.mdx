@@ -628,7 +628,7 @@ Here is the for loop in the source code that generates the first part of a new s
 Notice `mt[i]` only depends on the previous `mt[i]`, `mt[i+1]`, and `mt[i+M]` (where `M = 397`). Also notice that an `r` is generated in the verifier script even if we respond `n` when asked if we want to play the game. Though we can't actually see the generated `r`, the fact that we can force the script to generate an `r` means we can progress through the state of the rng. Since we get 3 tries this means:
 - First try: we can submit whatever data to gather the `r` values based on `mt[i]`
 - Second try: we want to gather the `r` values generated around `mt[M]`, so before our second try we should refuse to play the game about 39 times, since that means mersenne twister would have generated 49*8 = 392 values in total.
-- Third try: using the data from `mt[0:72]` and `mt[392:464]`, we can compute about `mt[0:64]` in the new state. Thus we will refuse to play the game around 15 more times, so that somewhere through our third try the new mersenne twister state will be generated. Then we will be able to predict $r_{10}$ and fool the verifier
+- Third try: using the data from `mt[0:72]` and `mt[392:464]`, we can compute at least `mt[0:64]` (and a little more) in the new state. Thus we will refuse to play the game around 15 more times, so that somewhere through our third try the new mersenne twister state will be generated. Then we will be able to predict $r_{10}$ and fool the verifier
 
 Now there is only one more detail to figure out. How do we actually fool the verifier if we can predict $r_{10}$?
 ```py
@@ -672,7 +672,7 @@ Now there is only one more detail to figure out. How do we actually fool the ver
         self._convince_and_close()
         return True, 0
 ```
-The talk function is used to verify each of our inputs according to the protocol. When we make our third attempt, we clearly want to claim that the sum is 1337. For every round before the final round, all we need to do is supply `p0` and `p1` such that `p0 + p1 == self.expect mod p`. Personally, I just made `p0` and `p1` equal so that I wouldn't have to deal with `pr` depending on `r`. For the last round, still we have that `p0 + p1 == self.expect mod p`, but now we also must make `pr == final_sum == 1337`. Notice that the final `r` is never sent to the prover, so there would be essentially no chance of coming up with the same final sum. Since we do have `r`, we can just solve the equations for `p0` and `p1`.
+The talk function is used to verify each of our inputs according to the protocol. When we make our third attempt, we clearly want to claim that the sum is 1337. For every round before the final round, all we need to do is supply `p0` and `p1` such that `p0 + p1 == self.expect mod p`. Personally, I just made `p0` and `p1` equal so that I wouldn't have to deal with `pr` depending on `r`. For the last round, still we have that `p0 + p1 == self.expect mod p`, but now we also must make `pr == final_sum == 1337`. Notice that the final `r` is never sent to the prover, so there would be essentially no chance of coming up with the same final. But since we do have `r`, we can just solve the equations for `p0` and `p1`.
 
 $$
 \begin{align*}
