@@ -1,7 +1,7 @@
 ---
 name: 'lolmeow'
 pronouns: 'he/him'
-avatar: 'lolmenowpfp.png'
+avatar: 'https://raw.githubusercontent.com/C0smic-B1tflip/C0smic-B1tflip.github.io/refs/heads/main/src/content/authors/lolmenowpfp.png'
 category: ['rev']
 bio: 'strings'
 website: 'https://sakouk.me'
