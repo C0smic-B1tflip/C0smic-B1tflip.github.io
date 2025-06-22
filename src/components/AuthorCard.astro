@@ -17,11 +17,11 @@ const isAuthorPage = currentPath === `/members/${author.id}`
 
 const socialLinks: SocialLink[] = [
   author.data.website && { href: author.data.website, label: 'Website' },
-  author.data.github && { href: author.data.github, label: 'GitHub' },
-  author.data.twitter && { href: author.data.twitter, label: 'Twitter' },
+  author.data.github && { href: `https://github.com/${author.data.github}`, label: 'GitHub' },
+  author.data.twitter && { href: `https://twitter.com/${author.data.twitter}`, label: 'Twitter' },
   author.data.linkedin && { href: author.data.linkedin, label: 'LinkedIn' },
   author.data.mail && { href: `mailto:${author.data.mail}`, label: 'Email' },
-  author.data.discord && { href: '', label: "Discord" }
+  author.data.discord && { href: `https://discord.com/users/${author.data.discord}`, label: "Discord" }
 ].filter(Boolean) as SocialLink[]
 ---
 

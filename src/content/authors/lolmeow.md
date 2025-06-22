@@ -5,6 +5,6 @@ avatar: 'https://raw.githubusercontent.com/C0smic-B1tflip/C0smic-B1tflip.github.
 category: ['forensic']
 bio: 'strings'
 website: 'https://sakouk.me'
-github: 'https://github.com/sa1181405'
-discord: 'lolmenow'
+github: 'sa1181405'
+discord: '726835821369360456'
 ---
