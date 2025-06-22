@@ -1,5 +1,5 @@
 ---
-name: 'lolmeow'
+name: 'lolmenow'
 pronouns: 'he/him'
 avatar: 'https://raw.githubusercontent.com/C0smic-B1tflip/C0smic-B1tflip.github.io/refs/heads/main/src/content/authors/lolmenowpfp.png'
 category: ['forensic']
