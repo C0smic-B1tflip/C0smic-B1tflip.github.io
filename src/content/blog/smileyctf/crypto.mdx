@@ -277,7 +277,177 @@ for i in range(2**12): # brute force the first output of the key
 ```
 Flag: `.;,;.{never_enough_but_you_gotta_just_make_more_or_something_idk_im_not_a_motivational_speaker_but_you_get_the_idea}`
 # LCGs are SBGs
-TODO (or is wjat doing this or something)
+> The wise Neobeo and Genni once told me a burrito recipe, but I forgot it! Remind me, what is the perfect burrito recipe?
+### Source
+```py
+import random
+from Crypto.Util.number import *
+import hashlib
+
+flag = open("flag.txt", "rb").read().strip()
+
+assert flag[:6] == b".;.;.{"
+assert flag[-1:] == b"}"
+flag = flag[6:-1]
+
+class ComplexNumber():
+    def __init__(self, r, i):
+        self.num = [r, i]
+
+    def __repr__(self):
+        return f"{self.num[0]} + {self.num[1]}*I"
+
+    def __getitem__(self, item):
+        return self.num[item]
+
+    def __add__(self, other):
+        return ComplexNumber(self.num[0] + other[0], self.num[1] + other[1])
+
+    def __sub__(self, other):
+        return ComplexNumber(self.num[0] - other[0], self.num[1] - other[1])
+
+    def __mul__(self, other):
+        p1 = self.num[0]*other[0] - self.num[1]*other[1]
+        p2 = self.num[1]*other[0] + self.num[0]*other[1]
+        return ComplexNumber(p1, p2)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __mod__(self, other):
+        return ComplexNumber(self.num[0] % other, self.num[1] % other)
+
+bits = 96
+p = None
+while True:
+    p = getPrime(bits)
+    if p.bit_length() == bits and pow(-1,(p-1)//2,p) == p-1:
+        break
+a = ComplexNumber(random.randint(0, p), random.randint(0, p))
+b = ComplexNumber(random.randint(0, p), random.randint(0, p))
+seed = ComplexNumber(random.randint(0, p), random.randint(0, p))
+
+def lcg():
+    x = seed
+    while True:
+        x = (a*x + b) % p
+        yield [x[0] >> (bits - 8), x[1] >> (bits - 8)]
+
+LCG = lcg()
+
+hint = b""
+for h,_ in zip(LCG, range(bits)):
+    hint += bytes([h[0], h[1]])
+
+enc_key = b""
+for key_byte, char in zip(LCG, range(8)):
+    enc_key += bytes([key_byte[0], key_byte[1]])
+
+enc_key = hashlib.sha256(enc_key).digest()
+enc_flag = bytes([a ^ b for a, b in zip(flag, enc_key)])
+
+print(f"{p = }")
+print(f"{a = }")
+print(f"hint = {hint.hex()}")
+print(f"enc_flag = {enc_flag.hex()}")
+```
+This is a typical truncated LCG challenge, but with complex numbers. The main idea is to double the dimensions, as complex numbers have 2 by 2 matrix representations. We looked at a normal truncated LCG writeup [here](https://jsur.in/posts/2020-09-20-downunderctf-2020-writeups#lsb-msb-calculation-game) to build the main attack.
+We replace \((x_1, x_2, \dots, x_{k+1})\) with \((\mathrm{Re}(x_1), \mathrm{Im}(x_1), \mathrm{Re}(x_2), \mathrm{Im}(x_2), \dots, \mathrm{Re}(x_{k+1}), \mathrm{Im}(x_{k+1})),\) with similar component doubling for the other vectors. The matrix in particular becomes \[
+\begin{pmatrix}
+             M &               0 &      0 &      0 &      0 &      0 &  \dots &      0 &      0 \\
+             0 &               M &      0 &      0 &      0 &      0 &  \dots &      0 &      0 \\
+\mathrm{Re}(a) & -\mathrm{Im}(a) &     -1 &      0 &      0 &      0 &  \dots &      0 &      0 \\
+\mathrm{Im}(a) &  \mathrm{Re}(a) &      0 &     -1 &      0 &      0 &  \dots &      0 &      0 \\
+\mathrm{Re}(a) & -\mathrm{Im}(a) &      0 &      0 &     -1 &      0 &  \dots &      0 &      0 \\
+\mathrm{Im}(a) &  \mathrm{Re}(a) &      0 &      0 &      0 &     -1 &  \dots &      0 &      0 \\
+        \vdots &          \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+\mathrm{Re}(a) & -\mathrm{Im}(a) &      0 &      0 &      0 &      0 &  \dots &     -1 &      0 \\
+\mathrm{Im}(a) &  \mathrm{Re}(a) &      0 &      0 &      0 &      0 &  \dots &      0 &     -1 \\
+\end{pmatrix}.
+\]
+### Final Script
+```py
+#!/usr/bin/sage
+
+import hashlib
+import itertools
+from string import printable
+
+M = 41385045268803457687081702183
+a = 7677443135906757371086239158 + 1202973425456014711302222902*I
+raw_hints = bytes.fromhex('1f6a6b1f1b50442274155c3d496b0a0342536e5242107b32041b34583e801c160c746b45851d003d0b3e57815d7115347e01183728023c6a0166425a4779048027285b3e0d5a3a053a401d6421195422441628345346452e8046690b326d52761310494c164e7c076d563f4f01616d647640760602350b27144d522d6363376d742b7f802b51241d71131a463c1a1619181b0f205459026d0a28317d32530e480c41694f0a046867365f171d172c345b6a7b7d460e79451d617a628329803045')
+ct = bytes.fromhex('3d2276bcefce8c3360b2f5fa87405d1d6da92b896fb746fa343439692a2d57e8')
+
+# similar to y' in the link - every other dimension is a real component, going Re Im Re Im etc.
+y_prime = []
+for i in range(190):
+    y_prime.append(raw_hints[i+2] - raw_hints[i+0])
+y_prime = vector(y_prime)
+
+# 190 by 190 matrix - one dimension for each x' (or y')
+L = [[0 for _ in range(190)] for _ in range(190)]
+
+# introduce multiple of M
+for i in range(0, 2):
+    L[i][i] = M
+
+# -1 coefficient from a**i * x'[0] + (-1) * x'[i]
+for i in range(2, 190):
+    L[i][i] = -1
+
+# complex multiplication by power of a (a**i coefficient)
+for i in range(1, 95):
+    L[2*i + 0][0] = (a**i)[0] % M
+    L[2*i + 0][1] = (-(a**i)[1]) % M
+    L[2*i + 1][0] = (a**i)[1] % M
+    L[2*i + 1][1] = (a**i)[0] % M
+
+# list -> Matrix -> reduced basis
+L = Matrix(L)
+B = L.LLL()
+
+# number of bits truncated/lost
+trunc = 88
+# B * 2**trunc * y'
+B_2_trunc_y_prime = B * 2**trunc * y_prime
+# same as v in link - know B * z' = v * M - B * 2**trunc * y' is small
+v = vector([round(i/M) for i in B_2_trunc_y_prime])
+# B * z'
+B_z_prime = (v * M) - B_2_trunc_y_prime
+# cancel out B, find z'
+z_prime = B.inverse() * B_z_prime
+
+# reconstruct hint difference vector x'
+x_prime = (2**trunc * y_prime) + z_prime
+# reconstruct complex numbers
+x_prime = [x_prime[i] + I*x_prime[i+1] for i in range(0, 190, 2)]
+
+# extrapolate more hint differences as x' is geometric sequence
+diffs = [a*(a**i)*x_prime[-1] for i in range(9)]
+# approximate last LCG output using given bits
+approx_last = (raw_hints[-2] << 88) + I*(raw_hints[-1] << 88)
+
+# approximate key using extrapolated differences and approximated output
+approx_key = []
+for diff in diffs:
+    approx_last += diff
+    approx_last = (approx_last[0] % M) + I*(approx_last[1] % M)
+    approx_key.append(int(approx_last[0]) >> trunc)
+    approx_key.append(int(approx_last[1]) >> trunc)
+approx_key = approx_key[2:] # just by local experimentation
+#print(approx_key) # for debugging with local
+
+# to account for possible error in approximating the key
+for i in itertools.product(*[[0,1] for _ in range(16)]):
+    # deriving key
+    key = [thing + thing2 for thing, thing2 in zip(approx_key, i)]
+    key = hashlib.sha256(bytes(key)).digest()
+    # xor decryption
+    msg = bytes([a ^^ b for a, b in zip(ct, key)])
+    if all(chr(c) in printable for c in msg):
+        print(msg)
+```
+
 # sums
 > I have a funny game, unfortunately the odds of you winning are basically 0, but I'm bored, so play with me and I'll give you a flag if you win.
 
