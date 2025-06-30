@@ -7,7 +7,7 @@ import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, groupPostsByYear, getSubpostsForParent } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
-
+import '@/styles/stars-blog.css'
 import type { PaginateFunction } from 'astro'
 
 export async function getStaticPaths({
