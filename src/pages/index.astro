@@ -6,7 +6,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
-
+import '@/styles/stars.css' 
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
@@ -15,13 +15,13 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
   <section>
     <div class="rounded-lg">
       <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="text-3xl leading-none font-medium">Cosmic Bit Flip</h3>
+        <h3 class="text-3xl leading-none font-medium">cosmic bit flip</h3>
          <p class="text-muted-foreground text-sm">
         </p>
       </div>
     </div>
     <div class="p-6 pt-0">
-    Cosmic Bit Flip is a high school / university competitive capture-the-flag (CTF) team. 
+    cosmic bit flip is a high school / university competitive capture-the-flag (CTF) team. 
     </div>
     
   </section>
