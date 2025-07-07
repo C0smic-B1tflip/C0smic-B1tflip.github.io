@@ -1,4 +1,4 @@
-/* Pixelated Star Background */
+/* Circular Starfield Background - Dense */
 @layer components {
   .star-field {
     position: fixed;
@@ -10,13 +10,20 @@
     z-index: -1;
   }
 
-  .star-small {
+  .star-small,
+  .star-medium,
+  .star-large,
+  .star-colored {
     position: absolute;
+    border-radius: 50%;
+  }
+
+  .star-small {
     width: 2px;
     height: 2px;
     background: var(--foreground);
     opacity: 0.7;
-    box-shadow: 
+    box-shadow:
       8vw 10vh var(--foreground),
       20vw 18vh var(--foreground),
       32vw 12vh var(--foreground),
@@ -46,17 +53,26 @@
       36vw 98vh var(--foreground),
       50vw 90vh var(--foreground),
       64vw 95vh var(--foreground),
-      80vw 92vh var(--foreground);
+      80vw 92vh var(--foreground),
+      6vw 8vh var(--foreground),
+      16vw 19vh var(--foreground),
+      24vw 30vh var(--foreground),
+      36vw 40vh var(--foreground),
+      46vw 34vh var(--foreground),
+      58vw 21vh var(--foreground),
+      69vw 12vh var(--foreground),
+      84vw 6vh var(--foreground),
+      92vw 18vh var(--foreground),
+      96vw 29vh var(--foreground);
     animation: star-twinkle 3s infinite;
   }
 
   .star-medium {
-    position: absolute;
     width: 4px;
     height: 4px;
     background: var(--foreground);
     opacity: 0.8;
-    box-shadow: 
+    box-shadow:
       15vw 8vh var(--foreground),
       28vw 20vh var(--foreground),
       42vw 14vh var(--foreground),
@@ -80,17 +96,26 @@
       45vw 85vh var(--foreground),
       60vw 92vh var(--foreground),
       75vw 88vh var(--foreground),
-      90vw 95vh var(--foreground);
+      90vw 95vh var(--foreground),
+      5vw 18vh var(--foreground),
+      18vw 25vh var(--foreground),
+      33vw 15vh var(--foreground),
+      48vw 30vh var(--foreground),
+      63vw 20vh var(--foreground),
+      77vw 27vh var(--foreground),
+      91vw 38vh var(--foreground),
+      14vw 52vh var(--foreground),
+      39vw 58vh var(--foreground),
+      61vw 54vh var(--foreground);
     animation: star-twinkle 4s infinite;
   }
 
   .star-large {
-    position: absolute;
     width: 6px;
     height: 6px;
     background: var(--accent);
     opacity: 0.9;
-    box-shadow: 
+    box-shadow:
       20vw 12vh var(--accent),
       40vw 25vh var(--accent),
       62vw 16vh var(--accent),
@@ -106,109 +131,19 @@
       14vw 90vh var(--accent),
       35vw 95vh var(--accent),
       56vw 88vh var(--accent),
-      76vw 96vh var(--accent);
+      76vw 96vh var(--accent),
+      8vw 8vh var(--accent),
+      24vw 18vh var(--accent),
+      48vw 10vh var(--accent),
+      72vw 20vh var(--accent);
     animation: star-twinkle 5s infinite;
   }
 
-  .star-pixel {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: var(--primary);
-    opacity: 0.8;
-  }
-
-  .star-pixel::before {
-    content: '';
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: var(--primary);
-    top: -6px;
-    left: 0;
-  }
-
-  .star-pixel::after {
-    content: '';
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: var(--primary);
-    top: 6px;
-    left: 0;
-  }
-
-  .star-pixel-cross::before {
-    content: '';
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: var(--primary);
-    top: 0;
-    left: -6px;
-  }
-
-  .star-pixel-cross::after {
-    content: '';
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: var(--primary);
-    top: 0;
-    left: 6px;
-  }
-
-  .pixel-star-1 {
-    position: absolute;
-    top: 15%;
-    left: 25%;
-    animation: star-twinkle 2s infinite;
-  }
-
-  .pixel-star-2 {
-    position: absolute;
-    top: 35%;
-    left: 70%;
-    animation: star-twinkle 3s infinite 0.5s;
-  }
-
-  .pixel-star-3 {
-    position: absolute;
-    top: 60%;
-    left: 15%;
-    animation: star-twinkle 4s infinite 1s;
-  }
-
-  .pixel-star-4 {
-    position: absolute;
-    top: 80%;
-    left: 85%;
-    animation: star-twinkle 2.5s infinite 1.5s;
-  }
-
-  .pixel-star-5 {
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    animation: star-twinkle 3.5s infinite 2s;
-  }
-
-  .pixel-star-6 {
-    position: absolute;
-    top: 75%;
-    left: 40%;
-    animation: star-twinkle 4.5s infinite 0.8s;
-  }
-
-  @keyframes star-twinkle {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-  }
-
   .star-colored {
-    position: absolute;
     width: 3px;
     height: 3px;
+    opacity: 0.8;
+    border-radius: 50%;
     box-shadow: 
       25vw 15vh oklch(0.7 0.15 200),
       50vw 30vh oklch(0.8 0.2 60),
@@ -219,8 +154,18 @@
       18vw 85vh oklch(0.75 0.2 240),
       45vw 92vh oklch(0.8 0.25 40),
       70vw 78vh oklch(0.7 0.2 180),
-      32vw 88vh oklch(0.8 0.15 300);
+      32vw 88vh oklch(0.8 0.15 300),
+      10vw 12vh oklch(0.75 0.15 260),
+      60vw 20vh oklch(0.85 0.25 100),
+      80vw 35vh oklch(0.7 0.2 340),
+      18vw 42vh oklch(0.8 0.2 220),
+      66vw 60vh oklch(0.78 0.25 160);
     animation: star-color-twinkle 6s infinite;
+  }
+
+  @keyframes star-twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
   }
 
   @keyframes star-color-twinkle {
